@@ -1,3 +1,9 @@
+# Working on Notebooks
+
+- Me: Dockerfile at this level can be used to run JupyterLab
+- `data` folder can contain any data files for notebooks, organized by nested folders per project
+- `my_icons` stores any images used. When saved, will be converted along with notebook
+
 # Auto-convert Jupyter Notebooks To Posts
 
 [`fastpages`](https://github.com/fastai/fastpages) will automatically convert [Jupyter](https://jupyter.org/) Notebooks saved into this directory as blog posts!
