@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Scraping Netflix Subtitle Data: A Small Example | Data Silience</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Scraping Netflix Subtitle Data: A Small Example" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Getting my hands on some of that Stove Top stuffing" />
+<meta property="og:description" content="Getting my hands on some of that Stove Top stuffing" />
+<link rel="canonical" href="https://zachbogart.github.io/data-silience/python/pandas/beautifulsoup/2020/10/29/parse-netflix-subtitles.html" />
+<meta property="og:url" content="https://zachbogart.github.io/data-silience/python/pandas/beautifulsoup/2020/10/29/parse-netflix-subtitles.html" />
+<meta property="og:site_name" content="Data Silience" />
+<meta property="og:image" content="https://zachbogart.github.io/data-silience/images/comedy_mask.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-29T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://zachbogart.github.io/data-silience/python/pandas/beautifulsoup/2020/10/29/parse-netflix-subtitles.html","@type":"BlogPosting","headline":"Scraping Netflix Subtitle Data: A Small Example","dateModified":"2020-10-29T00:00:00-05:00","datePublished":"2020-10-29T00:00:00-05:00","image":"https://zachbogart.github.io/data-silience/images/comedy_mask.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://zachbogart.github.io/data-silience/python/pandas/beautifulsoup/2020/10/29/parse-netflix-subtitles.html"},"description":"Getting my hands on some of that Stove Top stuffing","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/data-silience/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://zachbogart.github.io/data-silience/feed.xml" title="Data Silience" /><link rel="shortcut icon" type="image/x-icon" href="/data-silience/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/data-silience/">Data Silience</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/data-silience/about/">About</a><a class="page-link" href="/data-silience/search/">Search</a><a class="page-link" href="/data-silience/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Scraping Netflix Subtitle Data: A Small Example</h1><p class="page-description">Getting my hands on some of that Stove Top stuffing</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-29T00:00:00-05:00" itemprop="datePublished">
+        Oct 29, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/data-silience/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/data-silience/categories/#pandas">pandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/data-silience/categories/#beautifulsoup">beautifulsoup</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/zachbogart/data-silience/tree/master/_notebooks/2020-10-29-parse-netflix-subtitles.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/data-silience/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/zachbogart/data-silience/master?filepath=_notebooks%2F2020-10-29-parse-netflix-subtitles.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/data-silience/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/zachbogart/data-silience/blob/master/_notebooks/2020-10-29-parse-netflix-subtitles.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/data-silience/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-10-29-parse-netflix-subtitles.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Getting at Netflix Subtitles and Exploring a Dave Chappelle joke setup</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/data-silience/images/copied_from_nb/my_icons/comedy_mask.png" alt="" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a little example of parsing Netflix subtitle data. Here we look at Dave Chappelle's comedy special <em>Equanimity</em> and the story that he uses to setup a punchline he alludes to at the start of the show.</p>
+<p><strong>Note About Getting Subtitles From Netflix</strong>: I looked at <a href="https://github.com/isaacbernat/netflix-to-srt">this GitHub repo</a> for a little, which helped me find the subtitle file, but parsing it wasn't working. So, I saved it off as an XML file and did it myself with python.</p>
+<ol>
+<li>Find episode to get subtitles</li>
+<li>Developer Tools &gt; Network &gt; file starting with <code>?o=</code></li>
+<li>Save off as an <code>.xml</code> file</li>
+</ol>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered celltag_hide">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p><div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_colwidth&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">re</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+</p>
+    </details>
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">make_netflix_subtitle_df</span><span class="p">(</span><span class="n">netflix_xml_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Formatting from XML file of Netflix subtitles into a dataframe</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># open file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">netflix_xml_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    
+        <span class="c1"># replace &lt;br&gt; tags with space, important to get a full string per timestamp</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;br/&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+    
+        <span class="c1"># beautiful soup</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># grab p tags, loop thru and get tags/text from each</span>
+    <span class="n">subtitles</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+    <span class="n">df_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">timestamp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subtitles</span><span class="p">):</span>
+<span class="c1">#         print(timestamp.attrs)</span>
+<span class="c1">#         print(timestamp.text)</span>
+
+        <span class="n">df_dict</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="n">df_dict</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">text</span>
+        
+    <span class="c1"># dataframe</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())[[</span><span class="s1">&#39;begin&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">]]</span>
+    
+    <span class="c1"># format</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;begin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">begin</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dave-Chappelle-Fishbowl-Story">Dave Chappelle Fishbowl Story<a class="anchor-link" href="#Dave-Chappelle-Fishbowl-Story"> </a></h2><ul>
+<li>How many words before he wraps back around to the original punchline?</li>
+<li>How long is that gap?</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">make_netflix_subtitle_df</span><span class="p">(</span><span class="s1">&#39;chappelle-equanimity.xml&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>begin</th>
+      <th>end</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>63813750</td>
+      <td>72572500</td>
+      <td>["Killing Me Softly with His Song" playing]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>73406667</td>
+      <td>100934167</td>
+      <td>[woman vocalizes]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>111778334</td>
+      <td>149732917</td>
+      <td>♪ I heard he sang a good song ♪</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>150567084</td>
+      <td>191024167</td>
+      <td>♪ I heard he had a style ♪ -[camera shutter clicks]</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>191858334</td>
+      <td>241074167</td>
+      <td>♪ And so I came to see him To listen for a while ♪</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interim_story</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">57</span><span class="p">:</span><span class="mi">146</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interim_story</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>begin</th>
+      <th>end</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>57</th>
+      <td>2051215834</td>
+      <td>2064145417</td>
+      <td>You know what's weird?</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>2072487084</td>
+      <td>2090421667</td>
+      <td>I've always been this talented.</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>2105853750</td>
+      <td>2123788334</td>
+      <td>I can't remember a time when I wasn't.</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>2124622500</td>
+      <td>2159240417</td>
+      <td>You know, when I was growing up, I was probably about eight years old,</td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>2160074584</td>
+      <td>2188436250</td>
+      <td>and at the time,  we were living in Silver Spring.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="How-Many-Words?">How Many Words?<a class="anchor-link" href="#How-Many-Words?"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">story_text</span> <span class="o">=</span> <span class="n">interim_story</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="n">story_text</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[^\w ]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+<span class="n">text</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Output" data-close="Show Output"></summary>
+        <p>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;you know whats weird ive always been this talented i cant remember a time when i wasnt you know when i was growing up i was probably about eight years old and at the time we were living in silver spring yeah yes common misconception about me and dc a lot of people think im from the hood thats not true but i never bothered to correct anybody because i wanted the streets to embrace me as a matter of fact i kept it up as a ruse like sometimes ill hang out with rappers like nas and them and these motherfuckers start talking about the projects yo it was wild in the pjs yo and ill be like word nigga word but i dont know i have no idea my parents did just well enough so that i could grow up poor around white people to be honest whennas and them talk about the projects nigga i used to get jealous because it sounded fun everybody in the projects was poor and thats fair but if you were poor in silver spring nigga it felt like it was only happening to you nas does not know the pain of that first sleepover at a white friends house when you come back home on sunday and just look at your parents like yall need to step your game up everything at timmys house works remember the first time you saw that the cold winter and to be at a white friends house and see them motherfuckers in their living room without their coats on timmy was one of my first white friends like in my life man good dude too he moved to silver spring from utah of all places i guess his family was affiliated with that mormon church they got down there me and him used to hang out one day i was at his house just hanging out and timmy says dave why dont you stay for dinner tonight i said oh man id love to but i cant if im not home before dark my mother will kill me that was a lie my mother had several jobs i hadnt seen her in three or four days and the only reason i lied to timmy was because at that point in my life it was my experience that white dinner wasnt delicious id rather go home and fry some bologna or some shit like that but then old timmy threw me a curveball i wasnt expecting he said oh its too bad you cant stay dave cause mama made stove top stuffing i said what the fuck stove top hold on nigga let me make some phone calls real quick i had seen that commercial so many times i had dreamt of getting my hands on some of that stove top stuffing finally i met a motherfucker that actually had a box of stove top in the house i couldnt miss this opportunity so i pretended to call my mother then i came back and i said timmy timmy youre not gonna believe this great news mom said i can stay he said fantastic he said why dont you come with me and well help set the table and then we can say the blessing i had no interest in setting this motherfuckers table or saying these crazyass mormon prayers i just wanted the goddamn stuffing i told timmy you know what id love to help but let me go wash my hands first my plan was simple wash my hands slowly and by the time im done the table will be set the blessing will be said and all that there will be left to do is eat went to the bathroom i wash my hands very slowly i must have been in there for about ten minutes and suddenly one of his mothers came to the door she was like hi david right i said yes maam she said timmy tells me that youre planning on staying for dinner i said i hope thats not a problem maam she says no its no problem wed love to have you its just that we werent expecting company and im afraid theres not enoughstove top stuffing for everybody&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+</p>
+    </details>
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="n">word_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">word_count</span><span class="o">.</span><span class="n">elements</span><span class="p">()))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>712</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="How-Long-of-a-Gap?">How Long of a Gap?<a class="anchor-link" href="#How-Long-of-a-Gap?"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interim_story</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>begin</th>
+      <th>end</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>57</th>
+      <td>2051215834</td>
+      <td>2064145417</td>
+      <td>You know what's weird?</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>2072487084</td>
+      <td>2090421667</td>
+      <td>I've always been this talented.</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>2105853750</td>
+      <td>2123788334</td>
+      <td>I can't remember a time when I wasn't.</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>2124622500</td>
+      <td>2159240417</td>
+      <td>You know, when I was growing up, I was probably about eight years old,</td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>2160074584</td>
+      <td>2188436250</td>
+      <td>and at the time,  we were living in Silver Spring.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">interim_story</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">interim_story</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">duration</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The duration is provided as 10^7 seconds.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">minutes_full</span> <span class="o">=</span> <span class="n">duration</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">7</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span>
+<span class="n">minutes_full</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>5.243432638333333</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">minutes_full</span><span class="p">)</span>
+<span class="n">seconds_frac</span> <span class="o">=</span> <span class="n">minutes_full</span> <span class="o">%</span> <span class="mi">1</span>
+<span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seconds_frac</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Story lasts for </span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2"> minutes, </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Story lasts for 5 minutes, 14 seconds
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h2><ul>
+<li>Example of parsing Netflix subtitles. Data includes timestamp for a given subtitle and the associated text.</li>
+</ul>
+<h3 id="What's-Useful-for-Later:">What's Useful for Later:<a class="anchor-link" href="#What's-Useful-for-Later:"> </a></h3><ul>
+<li>Function for parsing Netflix <code>.xml</code> subtitle files</li>
+</ul>
+<h3 id="Going-Further">Going Further<a class="anchor-link" href="#Going-Further"> </a></h3><ul>
+<li>I could see attempting to recreate work I have done previously on the use of <a href="https://zachbogart.com/project/comedy/">swear words in comedy specials</a></li>
+</ul>
+<p>Till next time!</p>
+<p><img src="https://media.giphy.com/media/42D3CxaINsAFemFuId/giphy.gif" alt="" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Image-Credit">Image Credit<a class="anchor-link" href="#Image-Credit"> </a></h4><p><a href="https://thenounproject.com/search/?creator=4129988&amp;q=comedy&amp;i=3169849">comedy mask</a> by Zach Bogart from <a href="https://thenounproject.com/">the Noun Project</a></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="zachbogart/data-silience"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/data-silience/python/pandas/beautifulsoup/2020/10/29/parse-netflix-subtitles.html" hidden></a>
+</article>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('zachbogart', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': '',
+    'floating-chat.donateButton.background-color': '#ffffff',
+    'floating-chat.donateButton.text-color': '#323842'
+  });
+</script>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/data-silience/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/data-silience/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/data-silience/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A place where Zach Bogart codes up things</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/zachbogart" title="zachbogart"><svg class="svg-icon grey"><use xlink:href="/data-silience/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/zachbogart" title="zachbogart"><svg class="svg-icon grey"><use xlink:href="/data-silience/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
