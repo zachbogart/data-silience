@@ -4,7 +4,7 @@ description: "Look, a coding website!"
 layout: post
 toc: false
 comments: false
-image: "images/2020-05-23-hello-world/hello.png"
+image: "images/hello.png"
 hide: false
 search_exclude: true
 categories: [news]

@@ -1,0 +1,50 @@
+---
+title: "Learning R: Plotting Data in Polar Coordinates"  
+description: ""
+layout: post
+toc: false
+comments: true
+image: "images/three_d_cubes.png"
+hide: false
+search_exclude: true
+categories: [r, tidyverse, ggplot]
+---
+
+
+
+I'm going through [R4DS](https://r4ds.had.co.nz/) and I liked the [ease with which one can map a bar chart in polar coordinates](https://r4ds.had.co.nz/data-visualisation.html#coordinate-systems), so thought I'd give it a shot with some temperature data.
+
+## Plotting in Polar Coordinates
+
+```{r include=FALSE}
+library(tidyverse)
+theme_set(theme_light())
+```
+
+```{r}
+library(rattle.data)
+
+aus_temp <- weather %>%
+  select(Date, Temp9am, Temp3pm) %>%
+  pivot_longer(cols = Temp9am:Temp3pm, names_to="temp", values_to="value") %>% 
+  ggplot(aes(x=Date)) +
+    geom_line(aes(y=value, color=temp)) +
+    labs(x="",y="Temperature (Celsius)")
+
+aus_temp + coord_polar()
+```
+
+## Less Fun, Easier to Parse
+
+```{r}
+aus_temp + coord_cartesian()
+``` 
+
+## Overall
+
+- I'm a big fan of dplyr and the ability to pipe things together
+- Polar Coordinates are cool, but can be more confusing than helpful
+
+
+#### Image Credit
+[Target](https://thenounproject.com/search/?creator=4129988&q=target&i=2221668) by Zach Bogart from [the Noun Project](https://thenounproject.com/)
