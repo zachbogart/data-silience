@@ -6,13 +6,14 @@
 
 https://zachbogart.github.io/data-silience/
 
-# My Blog
-
+# Data Silience
 
 _powered by [fastpages](https://github.com/fastai/fastpages)_
 
+## Notes from auto-generated README
+- For when I forget where things are, etc.
 
-## What To Do Next?
+### What To Do Next?
 
 Great!  You have setup your repo.  Now its time to start writing content.  Some helpful links:
 
