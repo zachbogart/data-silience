@@ -37,7 +37,7 @@ So glad to have come across this. 🙏 💖
 
 Sure! I'm more of a tea or hot chocolate kind of guy, but sure! Much appreciated!
 
-<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Give me a "coffee" (read as "tea" or "hot chocolate")', '#FE5C62', 'G2G81P6UM');kofiwidget2.draw();</script> 
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Give me a "coffee" (read "tea" or "hot chocolate")', '#FE5C62', 'G2G81P6UM');kofiwidget2.draw();</script> 
 
 ## Anything else?
 
