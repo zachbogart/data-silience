@@ -4,12 +4,12 @@ description: "Getting this site setup"
 title: "Working in fastpages"
 toc: false
 branch: master
-badges: true
+badges: false
 comments: true
 categories: [fastpages, jupyter]
-image: images/some_folder/your_image.png
+image: "images/thumbnails/7538107210_cf213e2a7c_c.jpeg"
 hide: false
-search_exclude: true
+search_exclude: false
 nb_path: _notebooks/2021-03-25-working-in-fastpages.ipynb
 layout: notebook
 ---
@@ -25,13 +25,21 @@ layout: notebook
         
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/data-silience/images/copied_from_nb/my_icons/noun_waving_hello_3169895.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Hello,-World!">Hello, World!<a class="anchor-link" href="#Hello,-World!"> </a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Well that was relatively painless. Here's a site made out of (mostly) jupyter notebooks. Thanks, <a href="https://github.com/fastai/fastpages">fastpages</a>!</p>
+<p>Well that was relatively painless.</p>
+<p>Here's a site made out of (mostly) jupyter notebooks. This post is just a jupyter notebook. 😎 Thanks, <a href="https://github.com/fastai/fastpages">fastpages</a>! 🚀</p>
 
 </div>
 </div>
@@ -45,8 +53,12 @@ layout: notebook
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>fastpages made it really easy to setup from their repo. Using an auto-generated pull request, was able to get a new repo up and running with no trouble.</li>
-<li>Connecting to GitHub Pages site <a href="https://zachbogart.github.io/">zachbogart.github.io</a> was easy. Just set it as the <code>baseurl</code>.</li>
+<li><strong>Setup is a breeze</strong>: fastpages made it really easy to setup from their repo. Using an auto-generated pull request, was able to get a new repo up and running with no trouble.</li>
+<li><strong>Connect to existing stuff</strong>: Connecting to GitHub Pages site <a href="https://zachbogart.github.io/">zachbogart.github.io</a> was easy. Just set it as the <code>baseurl</code>.</li>
+<li><strong>Tracking Notebooks</strong>: Was worried that the use of jupyter notebooks to render the posts might mean that the <code>.ipynb</code> files have to be git tracked. This can be a pain cause there is a lot in each notebook, so running a notebook without changing code will still lead to git changes, which are difficult to parse without additional tools. <ul>
+<li>However, at least for this post, <a href="https://jupytext.readthedocs.io/en/latest/index.html">jupytext</a> works like a charm!{% fn 1 %} Can work in jupyter notebooks, track python script versions of them, and have it all be rendered to a site. Super awesome. Hope it lasts...</li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -55,8 +67,7 @@ layout: notebook
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="What-Will-Require-More-Understanding">What Will Require More Understanding<a class="anchor-link" href="#What-Will-Require-More-Understanding"> </a></h2><ul>
-<li><strong>Handling Images</strong>: For previous posts, I used images as thumbnails and at the start of each post. In my experimenting, was finding I had to copy the image in two places: <code>my_icons</code> in the <code>_notebooks</code> folder and in the <code>images</code> folder. Wondering if there is a cleaner way to include an image in just one place (the <a href="https://github.com/fastai/fastpages#setting-an-image-for-social-media">docs</a> mention that the social media image can only be set under <code>images</code>.</li>
-<li><strong>Tracking Notebooks</strong>: The setup automagically generates the posts for the site from notebooks. Sweet! But it looks like this means the notebooks have to be git tracked. Have found in the past that tracking the <code>.ipynb</code> to be a pain (granted there are some tools to compare differences, would be nice if executing a notebook didn't specify git changes). I have found <a href="">jupytext</a> invaluable, allowing me to git track a paired <code>.py</code> script, for example, making it very clear what has changed in a notebook. Wondering if there may be a way to track files with paired jupytext scripts, while still allowing for the auto-generation of the posts.</li>
+<li><strong>Handling Images</strong>: For previous posts, I used images as thumbnails <em>and</em> at the start of each post. In my experimenting, was finding I had to copy the image in two places: <code>my_icons</code> in the <code>_notebooks</code> folder and in the <code>images</code> folder. Wondering if there is a cleaner way to include an image in just one place (the <a href="https://github.com/fastai/fastpages#setting-an-image-for-social-media">docs</a> mention that the social media image can only be set under <code>images</code>).</li>
 <li><strong>It's a big machine</strong>: The repo can be pretty intimidating. There are a lot of folders that make it go and a bunch of files with "THIS FILE WAS AUTOGENERATED! DO NOT EDIT!" penciled in. Will take some getting used to, getting comfortable with the setup and knowing what parts I should touch. There are some files that I could burn myself on, so I will go slow, use oven mitts, and try not to void any warranties.</li>
 </ul>
 
@@ -74,6 +85,26 @@ layout: notebook
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><img src="https://media.giphy.com/media/G5h04AkAvAHcs/giphy.gif" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Image-Credit">Image Credit<a class="anchor-link" href="#Image-Credit"> </a></h4><ul>
+<li><a href="https://thenounproject.com/search/?creator=4129988&amp;q=hello&amp;i=3169895">waving hello</a> by Zach Bogart from the <a href="https://thenounproject.com/zachbogart/">Noun Project</a></li>
+<li><a href="https://www.flickr.com/photos/nasacommons/7538107210/in/photolist-cu7LDG-cu7KiW-cubwMw-cu7Lim-cu7L1S-cu7L9d-bH9Ff6-kUBmeB-cubwDj-qAj3oW-cu7MDs-2hXAdPi-2jGCtk8-2jGCtj1-fpKVja-dWrkiU-dMAhAv-23Pqy53-dMFR2m-dMFRby-dMFRko-dMAhPP-dMFRaU-wLozW8-dMFTUW-2k3Gwre-2k3GwrE-oeuB1P-2k3Y9g1-2k3GwsG-2k3Xtps-2k3CGnm-2k3TEak-2k3Gwvs-2k3CGoi-2k3CGnX-2k3Gwsg-2k3Y9fp-2k3CGn1-2k3HdRZ-2k3Gwsr-2k3GwvN-2k3GwqC-2k3Gwr4-2k3YBEu-2k3Kuuo-2k3GwvC-2k3YBDT-2k3EYKc-2k3YBEV">Differential Analyzer</a> from "NASA on The Commons" on Flickr Commons<ul>
+<li>Cool Description: <em>Differential Analyzer built under the direction of Harold Mergler in the Instrument Research Section. The technician is preparing a data report. This equipment was located at the Lewis Flight Propulsion Laboratory, LFPL, now John H. Glenn Research Center at Lewis Field, Cleveland Ohio.</em></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>{{ '<a href="https://github.com/mwouts/jupytext">Jupytext</a> is a super useful way to save off jupyter notebooks as other formats. I use it all the time. Pairing a notebook is easy and you can just set it and forget it. Note: If in <a href="https://jupyterlab.readthedocs.io/en/stable/">JupyterLab</a>, use "View &gt; Activate Command Palette" or "Shift + Cmd + C" to "Pair..." a notebook format. Took me a while to find out how to do this! ' | fndetail: 1 }}</p>
 
 </div>
 </div>
