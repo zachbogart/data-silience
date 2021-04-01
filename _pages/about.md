@@ -2,6 +2,7 @@
 layout: page
 title: About
 permalink: /about/
+image: images/site_banner.png
 ---
 
 ![]({{site.baseurl}}/images/excited.png)
