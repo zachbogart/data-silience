@@ -32,6 +32,13 @@ layout: notebook
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>{% include important.html content='This post is hard to read. Experimenting with generating a notebook and posting it without a lot of extra work. Might try recording creation of a post sometime. But for now, this post is hard to parse as a user experience, although it does have an Altair graph you can poke and prod at the end...' %}</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>From <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday</a>, read in the data and get to a visualization with Seaborn and Altair </li>
 <li>Quite rough, thinking it might be beneficial to try recording making a notebook...</li>

@@ -27,6 +27,8 @@
 
 # ![](my_icons/noun_Honeycomb_3644796.png)
 
+# > Important: This post is hard to read. Experimenting with generating a notebook and posting it without a lot of extra work. Might try recording creation of a post sometime. But for now, this post is hard to parse as a user experience, although it does have an Altair graph you can poke and prod at the end...
+
 # - From [TidyTuesday](https://github.com/rfordatascience/tidytuesday), read in the data and get to a visualization with Seaborn and Altair 
 # - Quite rough, thinking it might be beneficial to try recording making a notebook...
 
