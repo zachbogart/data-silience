@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>JupyTuesday: TidyTuesday Example in Python | Data Silience</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="JupyTuesday: TidyTuesday Example in Python" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Quick and dirty try of TidyTuesday data in a Jupyter Notebook" />
+<meta property="og:description" content="Quick and dirty try of TidyTuesday data in a Jupyter Notebook" />
+<link rel="canonical" href="https://zachbogart.github.io/data-silience/python/jupytuesday/seaborn/altair/2021/04/07/jupytues_00_transit_cost.html" />
+<meta property="og:url" content="https://zachbogart.github.io/data-silience/python/jupytuesday/seaborn/altair/2021/04/07/jupytues_00_transit_cost.html" />
+<meta property="og:site_name" content="Data Silience" />
+<meta property="og:image" content="https://zachbogart.github.io/data-silience/images/thumbnails/39623169081_f7f1f722ab_c.jpeg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-04-07T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://zachbogart.github.io/data-silience/python/jupytuesday/seaborn/altair/2021/04/07/jupytues_00_transit_cost.html","@type":"BlogPosting","headline":"JupyTuesday: TidyTuesday Example in Python","dateModified":"2021-04-07T00:00:00-05:00","datePublished":"2021-04-07T00:00:00-05:00","image":"https://zachbogart.github.io/data-silience/images/thumbnails/39623169081_f7f1f722ab_c.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://zachbogart.github.io/data-silience/python/jupytuesday/seaborn/altair/2021/04/07/jupytues_00_transit_cost.html"},"description":"Quick and dirty try of TidyTuesday data in a Jupyter Notebook","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/data-silience/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://zachbogart.github.io/data-silience/feed.xml" title="Data Silience" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8SEEGDRPEC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8SEEGDRPEC');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/data-silience/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/data-silience/">Data Silience</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/data-silience/about/">About</a><a class="page-link" href="/data-silience/search/">Search</a><a class="page-link" href="/data-silience/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">JupyTuesday: TidyTuesday Example in Python</h1><p class="page-description">Quick and dirty try of TidyTuesday data in a Jupyter Notebook</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-04-07T00:00:00-05:00" itemprop="datePublished">
+        Apr 7, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/data-silience/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/data-silience/categories/#jupytuesday">jupytuesday</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/data-silience/categories/#seaborn">seaborn</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/data-silience/categories/#altair">altair</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/jupytues_00_transit_cost.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/data-silience/images/copied_from_nb/my_icons/noun_Honeycomb_3644796.png" alt="" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>From <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday</a>, read in the data and get to a visualization with Seaborn and Altair </li>
+<li>Quite rough, thinking it might be beneficial to try recording making a notebook...</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p><div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">transit_cost</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-05/transit_cost.csv&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+</p>
+    </details>
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">transit_cost</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>e                    0
+country              0
+city                 0
+line                 0
+start_year          46
+end_year            64
+rr                   1
+length               0
+tunnel_per          25
+tunnel              26
+stations             8
+source1              5
+cost                 0
+currency             0
+year                 0
+ppp_rate             2
+real_cost            0
+cost_km_millions     2
+source2              7
+reference           12
+dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">transit_cost</span> <span class="o">=</span> <span class="n">transit_cost</span><span class="p">[</span><span class="o">~</span><span class="n">transit_cost</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="For-the-tracks-that-are-completed,-what-is-the-relationship-between-cost-and-distance?">For the tracks that are completed, what is the relationship between cost and distance?<a class="anchor-link" href="#For-the-tracks-that-are-completed,-what-is-the-relationship-between-cost-and-distance?"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">transit_cost</span><span class="o">.</span><span class="n">tunnel_per</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>100.00%    293
+0.00%       60
+84.00%       3
+35.00%       3
+53.00%       3
+Name: tunnel_per, dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>most of the tunnels are completed</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">completed</span> <span class="o">=</span> <span class="n">transit_cost</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">transit_cost</span><span class="o">.</span><span class="n">tunnel_per</span> <span class="o">==</span> <span class="s1">&#39;100.00%&#39;</span><span class="p">)</span> <span class="o">&amp;</span> 
+    <span class="p">(</span><span class="o">~</span><span class="n">transit_cost</span><span class="o">.</span><span class="n">cost_km_millions</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+<span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">completed</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>e                    0
+country              0
+city                 0
+line                 0
+start_year          26
+end_year            40
+rr                   0
+length               0
+tunnel_per           0
+tunnel               0
+stations             2
+source1              0
+cost                 0
+currency             0
+year                 0
+ppp_rate             0
+real_cost            0
+cost_km_millions     0
+source2              0
+reference            2
+dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># mean and counts for cost_km_millions by country</span>
+<span class="n">completed</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;country&#39;</span><span class="p">)[</span><span class="s1">&#39;cost_km_millions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mean</th>
+      <th>count</th>
+    </tr>
+    <tr>
+      <th>country</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>US</th>
+      <td>1339.014950</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>SG</th>
+      <td>872.836620</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>NZ</th>
+      <td>854.760857</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>UK</th>
+      <td>719.891667</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>EG</th>
+      <td>697.674419</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>PH</th>
+      <td>649.141985</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>AU</th>
+      <td>497.160784</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>HU</th>
+      <td>483.762162</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>IN</th>
+      <td>448.955224</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>CA</th>
+      <td>407.403943</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">compare</span> <span class="o">=</span> <span class="n">completed</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;country&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;cost_km_millions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># rename the multiIndex</span>
+<span class="n">compare</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">compare</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+<span class="n">compare</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">compare</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>country</th>
+      <th>cost_km_millions__mean</th>
+      <th>cost_km_millions__count</th>
+      <th>length__mean</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>AR</td>
+      <td>232.300000</td>
+      <td>1</td>
+      <td>20.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>AT</td>
+      <td>317.777778</td>
+      <td>1</td>
+      <td>9.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>AU</td>
+      <td>497.160784</td>
+      <td>2</td>
+      <td>8.75</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>BE</td>
+      <td>265.909091</td>
+      <td>1</td>
+      <td>4.40</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>BG</td>
+      <td>90.285327</td>
+      <td>4</td>
+      <td>4.85</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Seaborn">Seaborn<a class="anchor-link" href="#Seaborn"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p><div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">compare</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;cost_km_millions__mean&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;length__mean&#39;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="s1">&#39;cost_km_millions__count&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+</p>
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;seaborn.axisgrid.FacetGrid at 0x7fb4ec86cfa0&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+" />
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Altair">Altair<a class="anchor-link" href="#Altair"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p><div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span><span class="o">.</span><span class="n">mark_circle</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;cost_km_millions__mean&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Average Cost per Kilometer ($Million/km)&#39;</span><span class="p">)),</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;length__mean&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Average Length (km)&#39;</span><span class="p">)),</span>
+    <span class="n">tooltip</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;country&#39;</span><span class="p">,</span> <span class="s1">&#39;cost_km_millions__mean&#39;</span><span class="p">,</span> <span class="s1">&#39;length__mean&#39;</span><span class="p">],</span>
+<span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Dig Dug: Building Tunnels&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">configure_mark</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.7</span>
+<span class="p">)</span><span class="o">.</span><span class="n">configure_title</span><span class="p">(</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mi">24</span>
+    
+<span class="p">)</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+</p>
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+<div id="altair-viz-25ff147b0b3a4659a11938c03f7f180d"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-25ff147b0b3a4659a11938c03f7f180d") {
+      outputDiv = document.getElementById("altair-viz-25ff147b0b3a4659a11938c03f7f180d");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}, "mark": {"opacity": 0.7}, "title": {"fontSize": 24}}, "data": {"name": "data-059e57235c457ee05795f72123a2d80d"}, "mark": {"type": "circle", "size": 50}, "encoding": {"tooltip": [{"type": "nominal", "field": "country"}, {"type": "quantitative", "field": "cost_km_millions__mean"}, {"type": "quantitative", "field": "length__mean"}], "x": {"type": "quantitative", "axis": {"title": "Average Cost per Kilometer ($Million/km)"}, "field": "cost_km_millions__mean"}, "y": {"type": "quantitative", "axis": {"title": "Average Length (km)"}, "field": "length__mean"}}, "selection": {"selector019": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}, "title": "Dig Dug: Building Tunnels", "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-059e57235c457ee05795f72123a2d80d": [{"country": "AR", "cost_km_millions__mean": 232.3, "cost_km_millions__count": 1, "length__mean": 20.0}, {"country": "AT", "cost_km_millions__mean": 317.7777778, "cost_km_millions__count": 1, "length__mean": 9.0}, {"country": "AU", "cost_km_millions__mean": 497.16078430000005, "cost_km_millions__count": 2, "length__mean": 8.75}, {"country": "BE", "cost_km_millions__mean": 265.9090909, "cost_km_millions__count": 1, "length__mean": 4.4}, {"country": "BG", "cost_km_millions__mean": 90.285326715, "cost_km_millions__count": 4, "length__mean": 4.8500000000000005}, {"country": "BR", "cost_km_millions__mean": 316.25, "cost_km_millions__count": 1, "length__mean": 12.0}, {"country": "CA", "cost_km_millions__mean": 407.40394315000003, "cost_km_millions__count": 6, "length__mean": 6.716666666666666}, {"country": "CL", "cost_km_millions__mean": 168.31408019999998, "cost_km_millions__count": 2, "length__mean": 30.9}, {"country": "CN", "cost_km_millions__mean": 205.48181208053688, "cost_km_millions__count": 149, "length__mean": 21.86254362416107}, {"country": "CZ", "cost_km_millions__mean": 249.0229508, "cost_km_millions__count": 1, "length__mean": 6.1}, {"country": "DE", "cost_km_millions__mean": 257.63395506666666, "cost_km_millions__count": 12, "length__mean": 2.716666666666667}, {"country": "DK", "cost_km_millions__mean": 225.2516129, "cost_km_millions__count": 1, "length__mean": 15.5}, {"country": "EC", "cost_km_millions__mean": 166.768559, "cost_km_millions__count": 1, "length__mean": 22.9}, {"country": "EG", "cost_km_millions__mean": 697.6744186, "cost_km_millions__count": 1, "length__mean": 4.3}, {"country": "ES", "cost_km_millions__mean": 109.42025719222222, "cost_km_millions__count": 9, "length__mean": 4.4}, {"country": "FI", "cost_km_millions__mean": 114.2074074, "cost_km_millions__count": 1, "length__mean": 13.5}, {"country": "FR", "cost_km_millions__mean": 186.66899408181817, "cost_km_millions__count": 11, "length__mean": 3.2545454545454544}, {"country": "GR", "cost_km_millions__mean": 141.881743425, "cost_km_millions__count": 4, "length__mean": 8.674999999999999}, {"country": "HU", "cost_km_millions__mean": 483.7621622, "cost_km_millions__count": 1, "length__mean": 7.4}, {"country": "IN", "cost_km_millions__mean": 448.9552239, "cost_km_millions__count": 1, "length__mean": 33.5}, {"country": "IR", "cost_km_millions__mean": 199.71326163333333, "cost_km_millions__count": 3, "length__mean": 23.333333333333332}, {"country": "IT", "cost_km_millions__mean": 166.72009105, "cost_km_millions__count": 10, "length__mean": 6.309999999999999}, {"country": "JP", "cost_km_millions__mean": 336.7413766833333, "cost_km_millions__count": 6, "length__mean": 8.4}, {"country": "KR", "cost_km_millions__mean": 107.46049491499998, "cost_km_millions__count": 6, "length__mean": 22.78333333333333}, {"country": "NO", "cost_km_millions__mean": 142.03285060000002, "cost_km_millions__count": 2, "length__mean": 4.8999999999999995}, {"country": "NZ", "cost_km_millions__mean": 854.7608571, "cost_km_millions__count": 1, "length__mean": 3.5}, {"country": "PE", "cost_km_millions__mean": 316.8114286, "cost_km_millions__count": 1, "length__mean": 35.0}, {"country": "PH", "cost_km_millions__mean": 649.1419852, "cost_km_millions__count": 2, "length__mean": 19.65}, {"country": "PL", "cost_km_millions__mean": 274.683056125, "cost_km_millions__count": 4, "length__mean": 4.25}, {"country": "PT", "cost_km_millions__mean": 140.4, "cost_km_millions__count": 1, "length__mean": 2.0}, {"country": "RO", "cost_km_millions__mean": 269.6684058, "cost_km_millions__count": 1, "length__mean": 6.9}, {"country": "RU", "cost_km_millions__mean": 261.41659169999997, "cost_km_millions__count": 3, "length__mean": 24.733333333333334}, {"country": "SE", "cost_km_millions__mean": 130.27642276666666, "cost_km_millions__count": 3, "length__mean": 6.3}, {"country": "SG", "cost_km_millions__mean": 872.8366196000001, "cost_km_millions__count": 3, "length__mean": 29.633333333333336}, {"country": "TR", "cost_km_millions__mean": 116.98533333333336, "cost_km_millions__count": 15, "length__mean": 14.841333333333333}, {"country": "TW", "cost_km_millions__mean": 353.3585356333333, "cost_km_millions__count": 3, "length__mean": 13.833333333333334}, {"country": "UA", "cost_km_millions__mean": 310.8222201, "cost_km_millions__count": 2, "length__mean": 3.6}, {"country": "UK", "cost_km_millions__mean": 719.8916666499999, "cost_km_millions__count": 2, "length__mean": 12.1}, {"country": "US", "cost_km_millions__mean": 1339.0149495272728, "cost_km_millions__count": 11, "length__mean": 3.6909090909090905}, {"country": "UZ", "cost_km_millions__mean": 215.1724138, "cost_km_millions__count": 2, "length__mean": 2.9}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Image-Credit">Image Credit<a class="anchor-link" href="#Image-Credit"> </a></h4><ul>
+<li><a href="https://thenounproject.com/term/honeycomb/3644796/">Honeycomb</a> by Zach Bogart from the <a href="https://thenounproject.com/zachbogart/">Noun Project</a></li>
+<li><a href="https://flic.kr/p/23nn6HB">Three women cricket spectators picnicking</a> from "State Library of New South Wales" on Flickr Commons</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="zachbogart/data-silience"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/data-silience/python/jupytuesday/seaborn/altair/2021/04/07/jupytues_00_transit_cost.html" hidden></a>
+</article>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('zachbogart', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': '',
+    'floating-chat.donateButton.background-color': '#ffffff',
+    'floating-chat.donateButton.text-color': '#323842'
+  });
+</script>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/data-silience/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/data-silience/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/data-silience/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A place where Zach Bogart codes up things</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/zachbogart" title="zachbogart"><svg class="svg-icon grey"><use xlink:href="/data-silience/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/zachbogart" title="zachbogart"><svg class="svg-icon grey"><use xlink:href="/data-silience/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
